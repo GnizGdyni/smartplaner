@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SmartPlaner – planner zadań dla studenta</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f7d5b'/%3E%3Cpath d='M9 16.5l5 5 9-10' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="gora">
+  <div class="gora-srodek">
+    <div class="logo">
+      <span class="logo-znak" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="18" height="18"><path d="M8 16.5l5.5 5.5L24 10.5" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span>SmartPlaner</span>
+    </div>
+    <div class="gora-akcje">
+      <button type="button" id="btn-wczytaj" class="przycisk">Wczytaj JSON</button>
+      <button type="button" id="btn-zapisz" class="przycisk">Zapisz JSON</button>
+      <button type="button" id="btn-motyw" class="przycisk sama-ikona" title="Jasny / ciemny motyw" aria-label="Przełącz motyw">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+      </button>
+      <input type="file" id="plik" accept=".json,application/json" hidden>
+    </div>
+  </div>
+</header>
+
+<main class="uklad">
+  <section class="glowna">
+
+    <form id="szybkie" class="szybkie" autocomplete="off">
+      <input id="szybkie-pole" type="text" maxlength="300"
+             placeholder="Co masz do zrobienia? Np. Kolokwium z sieci w piątek !wysoki #studia"
+             aria-label="Szybkie dodawanie zadania">
+      <button type="submit" class="przycisk glowny">Dodaj</button>
+      <button type="button" id="btn-formularz" class="przycisk" title="Dodaj przez formularz ze wszystkimi polami">Formularz</button>
+    </form>
+    <div id="szybkie-podglad" class="podglad" aria-live="polite"></div>
+
+    <div id="komunikat" class="komunikat" hidden></div>
+
+    <div id="co-teraz"></div>
+
+    <nav id="zakladki" class="zakladki" aria-label="Widoki"></nav>
+
+    <div class="narzedzia">
+      <input id="szukaj" type="search" placeholder="Szukaj w zadaniach…" aria-label="Szukaj">
+      <label class="sortowanie">
+        <span>Kolejność</span>
+        <select id="sortowanie">
+          <option value="smart">od najpilniejszych</option>
+          <option value="termin">wg terminu</option>
+          <option value="priorytet">wg priorytetu</option>
+          <option value="tytul">alfabetycznie</option>
+        </select>
+      </label>
+    </div>
+    <div id="filtry" class="filtry"></div>
+
+    <ul id="lista" class="lista"></ul>
+    <div id="pusto" class="pusto" hidden></div>
+  </section>
+
+  <aside class="bok">
+    <section class="karta">
+      <h2>Najbliższe 7 dni</h2>
+      <div id="tydzien" class="tydzien"></div>
+      <p id="tydzien-uwaga" class="tydzien-uwaga" hidden></p>
+    </section>
+    <section class="karta">
+      <h2>Jak mi idzie</h2>
+      <div id="statystyki"></div>
+    </section>
+  </aside>
+</main>
+
+<footer class="stopka">
+  Zadania zapisują się same w tej przeglądarce. Żeby mieć je w pliku, kliknij „Zapisz JSON”.
+  Plik można też po prostu przeciągnąć na stronę.
+</footer>
+
+<dialog id="okno-zadanie" class="okno">
+  <form id="formularz" novalidate>
+    <h2 id="okno-naglowek">Nowe zadanie</h2>
+
+    <label class="pole">
+      <span>Tytuł</span>
+      <input id="f-tytul" type="text" maxlength="200" required>
+    </label>
+
+    <label class="pole">
+      <span>Opis <small>(nieobowiązkowy)</small></span>
+      <textarea id="f-opis" rows="3"></textarea>
+    </label>
+
+    <div class="pole">
+      <label for="f-termin"><span>Termin</span></label>
+      <div class="termin-rzad">
+        <input id="f-termin" type="date">
+        <div class="szybkie-daty">
+          <button type="button" data-dni="0">dziś</button>
+          <button type="button" data-dni="1">jutro</button>
+          <button type="button" data-dni="7">za tydzień</button>
+          <button type="button" data-dni="">bez terminu</button>
+        </div>
+      </div>
+    </div>
+
+    <fieldset class="pole priorytety">
+      <legend>Priorytet</legend>
+      <label><input type="radio" name="priorytet" value="niski"><span>niski</span></label>
+      <label><input type="radio" name="priorytet" value="sredni"><span>średni</span></label>
+      <label><input type="radio" name="priorytet" value="wysoki"><span>wysoki</span></label>
+    </fieldset>
+
+    <label class="pole">
+      <span>Tagi <small>(po przecinku)</small></span>
+      <input id="f-tagi" type="text" placeholder="np. studia, projekt">
+    </label>
+    <div id="f-tagi-podpowiedzi" class="podpowiedzi-tagow"></div>
+
+    <div class="okno-akcje">
+      <button type="button" id="f-anuluj" class="przycisk">Anuluj</button>
+      <button type="submit" class="przycisk glowny">Zapisz</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="okno-import" class="okno">
+  <h2>Co zrobić z obecną listą?</h2>
+  <p id="import-opis"></p>
+  <div class="okno-akcje">
+    <button type="button" id="import-anuluj" class="przycisk">Anuluj</button>
+    <button type="button" id="import-dopisz" class="przycisk">Dopisz do obecnych</button>
+    <button type="button" id="import-zastap" class="przycisk glowny">Zastąp obecne</button>
+  </div>
+</dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="js/daty.js"></script>
+<script src="js/parser.js"></script>
+<script src="js/smart.js"></script>
+<script src="js/dane.js"></script>
+<script src="js/przyklad.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

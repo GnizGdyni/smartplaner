@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SmartPlaner – prezentacja (2 min)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,550;9..144,650&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #14201a;
+      --panel: #1c2b23;
+      --ink: #eef5f0;
+      --muted: #9db0a4;
+      --accent: #5cbc8d;
+      --accent-2: #e0b05a;
+      --danger: #f08a76;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", system-ui, sans-serif;
+    }
+
+    body {
+      overflow: hidden;
+      background:
+        radial-gradient(900px 500px at 0% 0%, rgba(92, 188, 141, 0.18), transparent 55%),
+        radial-gradient(700px 400px at 100% 100%, rgba(224, 176, 90, 0.12), transparent 50%),
+        var(--bg);
+    }
+
+    .deck {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+
+    .slide {
+      display: none;
+      width: min(920px, 100%);
+      min-height: min(520px, 70vh);
+      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      border: 1px solid rgba(157, 176, 164, 0.25);
+      border-radius: 22px;
+      padding: 2.5rem 2.75rem;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      animation: in 0.35s ease;
+    }
+
+    .slide.active { display: block; }
+
+    @keyframes in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+    }
+
+    h1, h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    h1 { font-size: clamp(2.4rem, 5vw, 3.4rem); margin-bottom: 0.7rem; }
+    h2 { font-size: clamp(1.7rem, 3.5vw, 2.3rem); margin-bottom: 1rem; }
+
+    p, li {
+      font-size: 1.15rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .lead { color: var(--ink); font-size: 1.25rem; max-width: 36ch; }
+
+    ul {
+      list-style: none;
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 0.5rem;
+    }
+
+    li {
+      position: relative;
+      padding-left: 1.2rem;
+      color: var(--ink);
+    }
+
+    li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(157, 176, 164, 0.2);
+      border-radius: 14px;
+      padding: 1.1rem 1.2rem;
+    }
+
+    .card strong {
+      display: block;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+      font-size: 0.95rem;
+    }
+
+    .card p { font-size: 1rem; color: var(--ink); }
+
+    .example {
+      margin-top: 1.25rem;
+      font-family: ui-monospace, Consolas, monospace;
+      background: #0f1713;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      color: var(--accent-2);
+      font-size: 1.05rem;
+    }
+
+    .example span { color: var(--accent); }
+
+    .big-number {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 3.5rem;
+      color: var(--accent);
+      line-height: 1;
+      margin: 0.4rem 0;
+    }
+
+    .footer-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 1.4rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      background: linear-gradient(transparent, rgba(20, 32, 26, 0.9));
+    }
+
+    .dots { display: flex; gap: 0.4rem; }
+    .dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: rgba(157, 176, 164, 0.35);
+    }
+    .dot.on { background: var(--accent); }
+
+    .nav-hint { opacity: 0.8; }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .logo-mark {
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 10px;
+      background: var(--accent);
+      display: grid;
+      place-items: center;
+    }
+
+    .logo-mark svg { color: #14201a; }
+
+    .tagline {
+      margin-top: 1.5rem;
+      color: var(--accent-2);
+      font-weight: 600;
+    }
+
+    @media (max-width: 700px) {
+      .slide { padding: 1.5rem; min-height: auto; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .nav-hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+
+    <section class="slide active" data-n="0">
+      <div class="logo-row">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="18" height="18"><path d="M8 16.5l5.5 5.5L24 10.5" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="eyebrow" style="margin:0">SmartApp · eliminacje</span>
+      </div>
+      <h1>SmartPlaner</h1>
+      <p class="lead">Planner zadań, który nie tylko trzyma listę — mówi studentowi, od czego zacząć.</p>
+      <p class="tagline">Lista + pilność + polski język naturalny</p>
+    </section>
+
+    <section class="slide" data-n="1">
+      <p class="eyebrow">Problem</p>
+      <h2>Student ma 20 rzeczy na głowie.<br>Nie wie, którą ruszyć pierwszą.</h2>
+      <ul>
+        <li>Kolokwia, projekty, akademik, dentysta — wszystko naraz</li>
+        <li>Zwykłe to-do pokazuje listę, ale nie kolejność</li>
+        <li>Dodawanie przez formularz zajmuje dłużej niż samo zadanie</li>
+      </ul>
+    </section>
+
+    <section class="slide" data-n="2">
+      <p class="eyebrow">Wymagania — zrobione</p>
+      <h2>Pełny CRUD + JSON</h2>
+      <div class="grid-2">
+        <div class="card">
+          <strong>Zadania</strong>
+          <p>Lista, dodawanie, edycja, wykreślanie, usuwanie.</p>
+        </div>
+        <div class="card">
+          <strong>Plik</strong>
+          <p>Wczytanie i zapis w formacie z zadania (`wersja` + `zadania`).</p>
+        </div>
+        <div class="card">
+          <strong>Import</strong>
+          <p>Przycisk, przeciąganie pliku, dopisz albo zastąp.</p>
+        </div>
+        <div class="card">
+          <strong>Lokalnie</strong>
+          <p>Działa offline w przeglądarce, zapis w localStorage.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-n="3">
+      <p class="eyebrow">Nasz wkład #1</p>
+      <h2>„Co teraz?”</h2>
+      <p class="lead">Jeden ekran, jedno zadanie, jedno zdanie dlaczego akurat to.</p>
+      <ul>
+        <li>Pilność z terminu + priorytetu (kolokwium „pali się” wcześniej niż pranie)</li>
+        <li>Po terminie i „na dziś” lecą na górę</li>
+        <li>Przycisk „Pomiń na razie” → następna rzecz z kolejki</li>
+      </ul>
+    </section>
+
+    <section class="slide" data-n="4">
+      <p class="eyebrow">Nasz wkład #2</p>
+      <h2>Dodawanie jak w notatniku</h2>
+      <p>Jedno pole. Resztę wyciągamy z tekstu.</p>
+      <div class="example">
+        Kolokwium z sieci <span>w piątek</span> <span>!wysoki</span> <span>#studia</span>
+      </div>
+      <ul style="margin-top:1.2rem">
+        <li>„dziś / jutro / w piątek / 26.11 / za 3 dni”</li>
+        <li>`!wysoki` `!sredni` `!niski` oraz `#tagi`</li>
+      </ul>
+    </section>
+
+    <section class="slide" data-n="5">
+      <p class="eyebrow">Nasz wkład #3</p>
+      <h2>Tydzień obciążenia + statystyki</h2>
+      <div class="grid-2">
+        <div class="card">
+          <strong>7 dni naprzód</strong>
+          <p>Widać, który dzień jest przeładowany — ostrzeżenie zanim będzie za późno.</p>
+        </div>
+        <div class="card">
+          <strong>Jak mi idzie</strong>
+          <p>Procent zrobionych, po terminie, na dziś. Tempo, nie tylko lista.</p>
+        </div>
+      </div>
+      <p style="margin-top:1.2rem">Plus: widoki „Na dziś / Po terminie”, filtry tagów, sortowanie smart.</p>
+    </section>
+
+    <section class="slide" data-n="6">
+      <p class="eyebrow">Podsumowanie</p>
+      <h2>SmartPlaner w 3 punktach</h2>
+      <div class="big-number">1 → 2 → 3</div>
+      <ul>
+        <li><strong style="color:var(--ink)">Dodaj</strong> zdaniem po polsku</li>
+        <li><strong style="color:var(--ink)">Zrób</strong> to, co podpowiada „Co teraz?”</li>
+        <li><strong style="color:var(--ink)">Oddaj</strong> JSON w formacie z zadania</li>
+      </ul>
+      <p class="tagline">Dziękujemy — chętnie pokażemy live demo.</p>
+    </section>
+
+  </div>
+
+  <div class="footer-bar">
+    <span>SmartPlaner</span>
+    <div class="dots" id="dots"></div>
+    <span class="nav-hint">← → / spacja · Esc = start</span>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const dots = document.getElementById('dots');
+    let i = 0;
+
+    slides.forEach((_, n) => {
+      const d = document.createElement('span');
+      d.className = 'dot' + (n === 0 ? ' on' : '');
+      dots.appendChild(d);
+    });
+
+    function show(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => s.classList.toggle('active', k === i));
+      [...dots.children].forEach((d, k) => d.classList.toggle('on', k === i));
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        show(i + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        show(i - 1);
+      } else if (e.key === 'Home' || e.key === 'Escape') {
+        show(0);
+      } else if (e.key === 'End') {
+        show(slides.length - 1);
+      }
+    });
+
+    document.body.addEventListener('click', (e) => {
+      if (e.target.closest('a,button')) return;
+      show(e.clientX > window.innerWidth / 2 ? i + 1 : i - 1);
+    });
+  </script>
+</body>
+</html>
